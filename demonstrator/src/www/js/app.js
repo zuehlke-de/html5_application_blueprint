@@ -1,15 +1,7 @@
-/**
- * main file for the HTML5 application blueprint demonstrator app
- */
-$(function () {
-
-    /*
-     * Models
-     */
-    var BlipModel = Backbone.Model.extend();
-    var LogList = Backbone.Collection.extend({
-        model : BlipModel
-    })
+require([
+    'log/LogView',
+    'log/LogCollection'
+], function (LogView, LogCollection) {
 
     /*
      * Views
@@ -23,38 +15,6 @@ $(function () {
         }
     });
 
-    var LogItemView = Backbone.View.extend({
-
-        tagName : "li",
-
-        template : _.template($('#log-item').html()),
-
-        render : function (eventName) {
-            $(this.el).html(this.template(this.model.toJSON()));
-            return this;
-        }
-    });
-
-    var LogView = Backbone.View.extend({
-        tagName : "div",
-
-        initialize : function () {
-            this.model.bind('remove', this.render, this);
-        },
-
-        render : function () {
-            if (this.model.length) {
-                var ul = $("<ul></ul>");
-                _.each(this.model.models, function (logItem) {
-                    $(ul).append(new LogItemView({model: logItem}).render().el);
-                }, this);
-                $(this.el).html(ul);
-            } else {
-                $(this.el).html("All gone!");
-            }
-            return this;
-        }
-    });
 
     var MapView = Backbone.View.extend({
 
@@ -85,7 +45,7 @@ $(function () {
 
         home : function () {
 
-            this.logList = new LogList([
+            this.logCollection = new LogCollection([
                 { "contact" : { "id" : 1, "name" : "Zaphod Beeblebrox"}, "datetime" : "01.01.2016" },
                 { "contact" : { "id" : 2, "name" : "Trillian McMillian"}, "datetime" : "01.01.2015" },
                 { "contact" : { "id" : 3, "name" : "Arthur Dent"}, "datetime" : "01.01.2014" },
@@ -94,7 +54,7 @@ $(function () {
             ]);
 
             this.headerView = new HeaderView();
-            this.logView = new LogView({model: this.logList});
+            this.logView = new LogView({collection: this.logCollection});
             this.mapView = new MapView();
             this.timelineView = new TimelineView();
 
@@ -108,8 +68,8 @@ $(function () {
     var app = new AppRouter();
     Backbone.history.start();
     var popper = setInterval(function () {
-        if (app.logList.length) {
-            app.logList.pop();
+        if (app.logCollection.length) {
+            app.logCollection.pop();
         } else {
             clearInterval(popper);
         }

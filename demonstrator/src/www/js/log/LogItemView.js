@@ -1,4 +1,4 @@
-define([], function () {
+define('log/LogItemView', function () {
     var LogItemView = Backbone.View.extend({
         tagName : "li",
         template : _.template($('#log-item').html()),

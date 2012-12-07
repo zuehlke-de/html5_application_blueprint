@@ -1,4 +1,4 @@
-define([
+define('contactlist/ContactListView', [
     'log/LogItemView'
 ], function (LogItemView) {
     var LogView = Backbone.View.extend({

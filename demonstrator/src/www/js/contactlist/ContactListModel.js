@@ -1,26 +1,40 @@
-define([], function () {
+/**
+ * Model zum Laden der Kontaktliste vom blipz Server.
+ */
+define('contactlist/ContactListModel', [
+    'contactlist/ContactModel'
+], function (ContactModel) {
 
     var CONTACT_COLLECTION_URL = 'contacts.json'
 
     var ContactListModel = Backbone.Model.extend({
         url: CONTACT_COLLECTION_URL,
 
-        getContacts: function(){
-            var contacts = this.get('contacts');
-            return contacts;
+        defaults : {
+            timestamp : null,
+
+            // array of blipz contacts
+            contacts : null
         },
 
-        getCoordinates: function() {
+        getContacts: function(){
+            var rawContacts = this.get('contacts'),
+                contacts;
 
-            var contacts = this.get('contacts');
-            var coordinateMap = _.map(contacts, function (contact) {
-                var position = contact.position;
-                var lat = position.latitudeE6/1000000;
-                var lng = position.longitudeE6/1000000;
-                return {lat:lat, lng:lng}
+            contacts = _.map(rawContacts, function (rawContact) {
+                contact = new ContactModel({
+                    id : rawContact.id,
+                    mobileNr : rawContact.mobileNr,
+                    confirmed : rawContact.confirmed,
+                    latitude : rawContact.position.latitudeE6 / 1000000,
+                    longitude : rawContact.position.longitudeE6 / 1000000,
+                    blipzTimestamp : rawContact.position.timestamp
+                });
+
+                return contact;
             });
 
-            return coordinateMap;
+            return contacts;
         }
     })
 

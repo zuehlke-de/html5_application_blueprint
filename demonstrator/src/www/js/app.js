@@ -3,8 +3,8 @@ require([
     'contactlist/ContactCollection',
     'contactlist/ContactListModel',
     'map/MapView',
-    'BlipModel'
-], function (LogView, ContactCollection, ContactCollectionModel, MapView) {
+    'contactlist/ContactModel'
+], function (ContactListView, ContactCollection, ContactCollectionModel, MapView) {
 
     window.Map = Backbone.Model.extend({})
 
@@ -12,8 +12,6 @@ require([
      * Views
      */
     var HeaderView = Backbone.View.extend({
-        tagName : "div",
-
         render : function () {
             $(this.el).html("Dies ist die HeaderView");
             return this;
@@ -21,15 +19,6 @@ require([
     });
 
 
-
-    var TimelineView = Backbone.View.extend({
-        tagName : "div",
-
-        render : function () {
-            $(this.el).html("Dies ist die TimelineView");
-            return this;
-        }
-    });
 
     /*
      * Router
@@ -41,31 +30,29 @@ require([
 
         home : function () {
 
-            var contactCollection = new ContactCollection();
-
             var contacts = new ContactCollectionModel();
+            var contactCollection = new ContactCollection();
             contacts.on('change', function () {
                 var contactCollectionModels = contacts.getContacts();
                 contactCollection.reset(contactCollectionModels);
             });
-
             contacts.fetch();
-            this.headerView = new HeaderView();
-            this.logView = new LogView({collection: contactCollection});
 
-            this.mapView = new MapView({
+            var headerView = new HeaderView({
+                el : $('#header')
+            });
+            var contactListView = new ContactListView({
+                el : $('#log'),
+                collection: contactCollection
+            });
+            var mapView = new MapView({
                 el: $('#map'),
-                posts: contacts
+                contactCollection: contactCollection
             });
 
-            this.mapView.render();
-
-            this.timelineView = new TimelineView();
-
-            $('#header').html(this.headerView.render().el);
-            $('#log').html(this.logView.render().el);
-            //$('#map').html(this.mapView.render().el);
-            $('#timeline').html(this.timelineView.render().el);
+            headerView.render();
+            mapView.render();
+            contactListView.render();
         }
     });
 

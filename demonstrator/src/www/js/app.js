@@ -1,28 +1,9 @@
 require([
-    'log/LogView',
-    'log/LogCollection'
-], function (LogView, LogCollection) {
-
-
-    var POST_API = '/api/v1/post/'
-
-    window.Post = Backbone.Model.extend({
-        url: POST_API
-    })
-
-    window.Posts = Backbone.Collection.extend({
-        model: Post,
-        url: POST_API,
-
-        get_coordinates: function() {
-            coords = _.map(this.models, function(post) {
-                lat = post.attributes.lat;
-                lng = post.attributes.lng;
-                return {lat:lat, lng:lng}
-            });
-            return coords
-        }
-    })
+    'contactlist/ContactListView',
+    'log/LogCollection',
+    'contactlist/ContactListModel',
+    'map/MapView'
+], function (LogView, LogCollection, ContactCollectionModel, MapView) {
 
     window.Map = Backbone.Model.extend({})
 
@@ -38,35 +19,7 @@ require([
         }
     });
 
-    var MapView = Backbone.View.extend({
 
-        initialize: function(opts) {
-            _.bindAll(this, 'render');
-            this.posts = opts.posts;
-            this.posts.add()
-            this.posts.on('change', this.render);
-            //this.render();
-        },
-
-        render: function() {
-            var loc = new google.maps.LatLng('-34.397','150.644');
-            var options = {
-                zoom: 6,
-                center: loc,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            // create map
-            this.map = new google.maps.Map(this.el, options);
-
-            // add a marker
-            var marker = new google.maps.Marker({
-                position: loc,
-                map :this.map
-            });
-
-            return this;
-        }
-    });
 
     var TimelineView = Backbone.View.extend({
         tagName : "div",
@@ -98,20 +51,14 @@ require([
             this.headerView = new HeaderView();
             this.logView = new LogView({collection: this.logCollection});
 
-            post = new Post();
-
-            posts = new Posts();
-
-            map = new Map({
-                latitude: '-34.397',
-                longitude: '150.644'
-            });
+            posts = new ContactCollectionModel();
 
             this.mapView = new MapView({
                 el: $('#map'),
-                model: map,
                 posts: posts
             });
+
+            posts.fetch();
 
             this.mapView.render();
 

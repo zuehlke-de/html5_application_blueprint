@@ -1,0 +1,29 @@
+{
+    "timestamp" : 8243608526349,
+    "contacts" :
+            [
+                {
+                    "id" : "84656896",
+                    "mobileNr" : 491607654321,
+                    "confirmed" : true,
+                    "position" :
+                    {
+                        "latitudeE6" : 50178478,
+                        "longitudeE6" : 10237694,
+                        "timestamp" : 93746092456947
+                    }
+                },
+                {
+                    "id" : "84616896",
+                    "mobileNr" : 491617654321,
+                    "confirmed" : true,
+                    "position" :
+                    {
+                        "latitudeE6" : 51178478,
+                        "longitudeE6" : 10237694,
+                        "timestamp" : 93746092456947
+                    }
+                }
+
+            ]
+}

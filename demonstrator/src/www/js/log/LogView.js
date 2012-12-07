@@ -10,13 +10,13 @@ define([
 
         render : function () {
             if (this.collection.length) {
-                var ul = $("<ul></ul>");
+                var ul = $('<ul></ul>');
                 _.each(this.collection.models, function (logItem) {
-                    $(ul).append(new LogItemView({model: logItem}).render().el);
+                    ul.append(new LogItemView({ model : logItem }).render().el);
                 }, this);
-                $(this.el).html(ul);
+                this.$el.html(ul);
             } else {
-                $(this.el).html("All gone!");
+                this.$el.html('No contacts available');
             }
             return this;
         }

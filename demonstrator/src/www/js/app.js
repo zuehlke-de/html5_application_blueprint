@@ -1,9 +1,10 @@
 require([
     'contactlist/ContactListView',
-    'log/LogCollection',
+    'contactlist/ContactCollection',
     'contactlist/ContactListModel',
-    'map/MapView'
-], function (LogView, LogCollection, ContactCollectionModel, MapView) {
+    'map/MapView',
+    'BlipModel'
+], function (LogView, ContactCollection, ContactCollectionModel, MapView) {
 
     window.Map = Backbone.Model.extend({})
 
@@ -40,25 +41,22 @@ require([
 
         home : function () {
 
-            this.logCollection = new LogCollection([
-                { "contact" : { "id" : 1, "name" : "Zaphod Beeblebrox"}, "datetime" : "01.01.2016" },
-                { "contact" : { "id" : 2, "name" : "Trillian McMillian"}, "datetime" : "01.01.2015" },
-                { "contact" : { "id" : 3, "name" : "Arthur Dent"}, "datetime" : "01.01.2014" },
-                { "contact" : { "id" : 4, "name" : "Ford Prefect"}, "datetime" : "01.01.2013" },
-                { "contact" : { "id" : 5, "name" : "Wowbagger, the infinitely prolonged"}, "datetime" : "01.01.2012" }
-            ]);
+            var contactCollection = new ContactCollection();
 
+            var contacts = new ContactCollectionModel();
+            contacts.on('change', function () {
+                var contactCollectionModels = contacts.getContacts();
+                contactCollection.reset(contactCollectionModels);
+            });
+
+            contacts.fetch();
             this.headerView = new HeaderView();
-            this.logView = new LogView({collection: this.logCollection});
-
-            posts = new ContactCollectionModel();
+            this.logView = new LogView({collection: contactCollection});
 
             this.mapView = new MapView({
                 el: $('#map'),
-                posts: posts
+                posts: contacts
             });
-
-            posts.fetch();
 
             this.mapView.render();
 
@@ -73,11 +71,4 @@ require([
 
     var app = new AppRouter();
     Backbone.history.start();
-    var popper = setInterval(function () {
-        if (app.logCollection.length) {
-            app.logCollection.pop();
-        } else {
-            clearInterval(popper);
-        }
-    }, 1000);
 });

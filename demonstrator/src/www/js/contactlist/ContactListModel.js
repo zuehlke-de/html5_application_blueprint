@@ -1,8 +1,14 @@
 define([], function () {
+
     var CONTACT_COLLECTION_URL = 'contacts.json'
 
-    var ContactCollectionModel = Backbone.Model.extend({
+    var ContactListModel = Backbone.Model.extend({
         url: CONTACT_COLLECTION_URL,
+
+        getContacts: function(){
+            var contacts = this.get('contacts');
+            return contacts;
+        },
 
         getCoordinates: function() {
 
@@ -18,5 +24,5 @@ define([], function () {
         }
     })
 
-    return ContactCollectionModel;
+    return ContactListModel;
 });

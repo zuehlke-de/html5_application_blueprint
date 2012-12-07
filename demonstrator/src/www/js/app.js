@@ -45,7 +45,7 @@ require([
             this.posts = opts.posts;
             this.posts.add()
             this.posts.on('change', this.render);
-            this.render();
+            //this.render();
         },
 
         render: function() {
